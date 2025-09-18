@@ -9,5 +9,5 @@ public class DepartmentDTO {
     private String name;
 
     // Avoid recursion: include only student summaries
-    private List<StudentSummaryDTO> students;
+    private List<StudentDTO> students;
 }

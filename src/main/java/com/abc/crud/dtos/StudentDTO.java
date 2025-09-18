@@ -3,6 +3,7 @@ package com.abc.crud.dtos;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 public class StudentDTO {
@@ -12,6 +13,9 @@ public class StudentDTO {
     private String email;
     private LocalDate dob;
 
-    // Only include department name (or id+name if needed)
-    private DepartmentSummaryDTO department;
+// // Only include department name (or id+name if needed)
+    private DepartmentDTO departmentDTO;
+
+    private Set<Long> courseIds;         // Store course IDs only
+
 }

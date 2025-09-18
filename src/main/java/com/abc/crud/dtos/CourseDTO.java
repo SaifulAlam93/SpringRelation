@@ -11,5 +11,4 @@ public class CourseDTO {
 
     private Set<Long> studentIds;  // only IDs to avoid recursion
 
-    // getters and setters
 }

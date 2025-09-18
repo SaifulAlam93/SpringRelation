@@ -1,11 +1,12 @@
 package com.abc.crud.controller;
 
 
-
+import com.abc.crud.dtos.StudentDTO;
 import com.abc.crud.entity.Student;
 import com.abc.crud.services.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -14,7 +15,9 @@ public class StudentController {
 
     private final StudentService service;
 
-    public StudentController(StudentService service) { this.service = service; }
+    public StudentController(StudentService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public Student create(@Valid @RequestBody Student student) {
@@ -22,7 +25,9 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<Student> getAll() { return service.findAll(); }
+    public List<Student> getAll() {
+        return service.findAll();
+    }
 
     @GetMapping("/{id}")
     public Student getById(@PathVariable Long id) {
@@ -36,5 +41,14 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) { service.deleteById(id); }
+    public void delete(@PathVariable Long id) {
+        service.deleteById(id);
+    }
+
+    @GetMapping("/student/{id}")
+    public StudentDTO getStudentById(@PathVariable Long id) {
+        return service.getStudentById(id);
+    }
+
+
 }
