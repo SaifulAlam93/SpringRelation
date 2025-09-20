@@ -39,7 +39,9 @@ public class CourseService {
 
     // Get All Courses
     public List<CourseDTO> getAllCourses() {
-        return courseRepository.findAll()
+        List<Course> courseList = courseRepository.findAll();
+
+        return courseList
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());

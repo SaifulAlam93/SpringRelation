@@ -8,35 +8,37 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Data
 @Entity
 public class Student extends BaseEntity {
 
-    @NotBlank(message = "First name is required")
-    @Size(min = 2, max = 50, message = "First name must be 2-50 characters")
+//    @NotBlank(message = "First name is required")
+//    @Size(min = 2, max = 50, message = "First name must be 2-50 characters")
     private String firstName;
 
-    @NotBlank(message = "Last name is required")
-    @Size(min = 2, max = 50, message = "Last name must be 2-50 characters")
+//    @NotBlank(message = "Last name is required")
+//    @Size(min = 2, max = 50, message = "Last name must be 2-50 characters")
     private String lastName;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
+//    @NotBlank(message = "Email is required")
+//    @Email(message = "Email should be valid")
     private String email;
 
-    @Past(message = "Date of birth must be in the past")
+//    @Past(message = "Date of birth must be in the past")
     private LocalDate dob;  // Date of Birth
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    @JsonIgnoreProperties("students")   // Ignore only the "students" list when serializing
+    @JsonIgnoreProperties("students")   // important for JSON serialization
+//    @ToString.Exclude
     private Department department;
 
 
@@ -46,5 +48,6 @@ public class Student extends BaseEntity {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
+//    @ToString.Exclude
     private Set<Course> courses = new HashSet<>();
 }

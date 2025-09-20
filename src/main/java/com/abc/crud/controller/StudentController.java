@@ -2,7 +2,6 @@ package com.abc.crud.controller;
 
 
 import com.abc.crud.dtos.StudentDTO;
-import com.abc.crud.entity.Student;
 import com.abc.crud.services.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -20,22 +19,22 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student create(@Valid @RequestBody Student student) {
-        return service.save(student);
+    public StudentDTO create(@Valid @RequestBody StudentDTO studentDTO) {
+        return service.save(studentDTO);
     }
 
     @GetMapping
-    public List<Student> getAll() {
-        return service.findAll();
+    public List<StudentDTO> getAll() {
+        return service.getAllStudents();
     }
 
     @GetMapping("/{id}")
-    public Student getById(@PathVariable Long id) {
-        return service.findById(id).orElse(null);
+    public StudentDTO getById(@PathVariable Long id) {
+        return service.getStudentById(id);
     }
 
     @PutMapping("/{id}")
-    public Student update(@PathVariable Long id, @Valid @RequestBody Student student) {
+    public StudentDTO update(@PathVariable Long id, @Valid @RequestBody StudentDTO student) {
         student.setId(id);
         return service.save(student);
     }
@@ -44,11 +43,4 @@ public class StudentController {
     public void delete(@PathVariable Long id) {
         service.deleteById(id);
     }
-
-    @GetMapping("/student/{id}")
-    public StudentDTO getStudentById(@PathVariable Long id) {
-        return service.getStudentById(id);
-    }
-
-
 }

@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 // Course.java
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Entity
 @Data
 public class Course extends BaseEntity {
@@ -18,6 +18,5 @@ public class Course extends BaseEntity {
     private String name;
 
     @ManyToMany(mappedBy = "courses")
-//    @JsonIgnore
     private Set<Student> students = new HashSet<>();
 }

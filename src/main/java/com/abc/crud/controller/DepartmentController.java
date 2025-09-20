@@ -1,10 +1,8 @@
 package com.abc.crud.controller;
 
-
-import com.abc.crud.entity.Department;
+import com.abc.crud.dtos.DepartmentDTO;
 import com.abc.crud.services.DepartmentService;
-import jakarta.validation.Valid;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,28 +18,22 @@ public class DepartmentController {
     }
 
     @PostMapping
-    public Department create(@Valid @RequestBody Department dept) {
-        return service.save(dept);
+    public ResponseEntity<DepartmentDTO> create(@RequestBody DepartmentDTO dto) {
+        return service.saveDepartment(dto);
     }
 
     @GetMapping
-    public List<Department> getAll() {
-        return service.findAll();
+    public ResponseEntity<List<DepartmentDTO>> getAll() {
+        return service.getAllDepartments();
     }
 
     @GetMapping("/{id}")
-    public Department getById(@PathVariable Long id) {
-        return service.findById(id).orElse(null);
-    }
-
-    @PutMapping("/{id}")
-    public Department update(@PathVariable Long id, @Valid @RequestBody Department dept) {
-        dept.setId(id);
-        return service.save(dept);
+    public ResponseEntity<DepartmentDTO> getById(@PathVariable Long id) {
+        return service.getDepartmentById(id);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        service.deleteById(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        return service.deleteDepartment(id);
     }
 }
