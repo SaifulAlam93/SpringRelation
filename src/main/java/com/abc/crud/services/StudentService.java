@@ -50,21 +50,6 @@ public class StudentService {
         return repository.findById(id)
                 .map(this::toDTO)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
-
-//
-//        Student student = repository.findByIdWithCourses(id)
-//                .orElseThrow(() -> new RuntimeException("Student not found"));
-//
-//        StudentDTO dto = new StudentDTO();
-//        dto.setId(student.getId());
-//        dto.setFirstName(student.getFirstName());
-//        dto.setCourseIds(student.getCourses()
-//                .stream()
-//                .map(Course::getId)
-//                .collect(Collectors.toSet())
-//        );
-//
-//        return dto;
     }
 
     public void deleteById(Long id) {
@@ -121,6 +106,7 @@ public class StudentService {
         student.setLastName(dto.getLastName());
         student.setEmail(dto.getEmail());
         student.setDob(dto.getDob());
+
 
         // Department lookup
         if (dto.getDepartmentDTO() != null) {

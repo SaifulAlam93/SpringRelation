@@ -1,14 +1,18 @@
 package com.abc.crud.services;
 
+
+import com.abc.crud.config.ResourceNotFoundException;
 import com.abc.crud.dtos.DepartmentDTO;
 import com.abc.crud.dtos.StudentDTO;
 import com.abc.crud.entity.Department;
-import com.abc.crud.entity.Student;
 import com.abc.crud.repository.DepartmentRepository;
-import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,47 +27,78 @@ public class DepartmentService {
         this.repository = repository;
     }
 
+//    @Transactional
+//    public ResponseEntity<?> saveDepartment2(DepartmentDTO dto) {
+//        try {
+//            Optional<Department> existing = repository.findByName(dto.getName());
+//            if (existing.isPresent()) {
+//                return ResponseEntity.status(HttpStatus.CONFLICT)
+//                        .body("Department already exists with name: " + dto.getName());
+//            }
+//
+//            Department saved = repository.save(toEntity(dto));
+//            return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(saved));
+//
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Failed to create department: " + e.getMessage());
+//        }
+//    }
+
+
+//    @Transactional
+//    public ResponseEntity<?> saveDepartment(DepartmentDTO dto) {
+//        try {
+//            Department saved = repository.save(toEntity(dto));
+//            return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(saved));
+//        } catch (DataIntegrityViolationException e) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT)
+//                    .body("Department already exists with name: " + dto.getName());
+//        } catch (Exception e) {
+//            // Any other runtime exception
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Failed to create department: " + e.getMessage());
+//        }
+//    }
+
+
     // ---------- Save Department ----------
-    public ResponseEntity<DepartmentDTO> saveDepartment(DepartmentDTO dto) {
-        Department dept = toEntity(dto);
-        Department saved = repository.save(dept);
-        return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(saved));
+    @Transactional
+    public DepartmentDTO saveDepartment(DepartmentDTO dto) {
+        Department saved = repository.save(toEntity(dto));
+        return toDTO(saved);
     }
 
     // ---------- Get All Departments ----------
-    public ResponseEntity<List<DepartmentDTO>> getAllDepartments() {
-        List<DepartmentDTO> dtos = repository.findAll().stream()
+    public List<DepartmentDTO> getAllDepartments() {
+        return repository.findAll().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
     }
 
     // ---------- Get Department by ID ----------
-    public ResponseEntity<DepartmentDTO> getDepartmentById(Long id) {
-        Optional<Department> optional = repository.findById(id);
-        if (optional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(toDTO(optional.get()));
+    public DepartmentDTO getDepartmentById(Long id) {
+        Department dept = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
+        return toDTO(dept);
     }
 
     // ---------- Delete Department ----------
-    public ResponseEntity<Void> deleteDepartment(Long id) {
+    @Transactional
+    public void deleteDepartment(Long id) {
         if (!repository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Department not found with id: " + id);
         }
         repository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 
     // ---------- DTO Mappers ----------
-    public DepartmentDTO toDTO(Department department) {
+    private DepartmentDTO toDTO(Department department) {
         if (department == null) return null;
         DepartmentDTO dto = new DepartmentDTO();
         dto.setId(department.getId());
         dto.setName(department.getName());
 
-        // Map students to StudentDTO (summary)
         if (department.getStudents() != null) {
             List<StudentDTO> students = department.getStudents().stream().map(s -> {
                 StudentDTO studentDTO = new StudentDTO();
@@ -79,12 +114,16 @@ public class DepartmentService {
         return dto;
     }
 
-    public Department toEntity(DepartmentDTO dto) {
+    private Department toEntity(DepartmentDTO dto) {
         if (dto == null) return null;
         Department dept = new Department();
         dept.setId(dto.getId());
         dept.setName(dto.getName());
-        // Note: We do not set students here to avoid overriding existing ones
         return dept;
     }
 }
+
+
+
+
+

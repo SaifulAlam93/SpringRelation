@@ -1,14 +1,12 @@
 package com.abc.crud.entity;
 
 import com.abc.crud.config.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -18,6 +16,13 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Data
 @Entity
+//@Table(
+//        name = "student",
+//        uniqueConstraints = {
+//                @UniqueConstraint(name = "UK_EMAIL", columnNames = {"email"}),
+//                @UniqueConstraint(name = "UK_NAME", columnNames = {"first_name", "last_name"})
+//        }
+//)
 public class Student extends BaseEntity {
 
 //    @NotBlank(message = "First name is required")
@@ -30,6 +35,7 @@ public class Student extends BaseEntity {
 
 //    @NotBlank(message = "Email is required")
 //    @Email(message = "Email should be valid")
+//    @Column(unique = true)
     private String email;
 
 //    @Past(message = "Date of birth must be in the past")
@@ -37,8 +43,8 @@ public class Student extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    @JsonIgnoreProperties("students")   // important for JSON serialization
-//    @ToString.Exclude
+//    @JsonIgnoreProperties("students")   // important for JSON serialization
+    @ToString.Exclude
     private Department department;
 
 
@@ -48,6 +54,6 @@ public class Student extends BaseEntity {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-//    @ToString.Exclude
+    @ToString.Exclude
     private Set<Course> courses = new HashSet<>();
 }
